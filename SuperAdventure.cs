@@ -58,6 +58,7 @@ namespace Super_Adventure
                 rtbMessages.Text += "You must have a " +
                     newLocation.ItemRequiredToEnter.Name +
                     " to enter this location." + Environment.NewLine;
+                ScrollToBottomOfMessages();
                 return;
             }
 
@@ -124,6 +125,7 @@ namespace Super_Adventure
                                 newLocation.QuestAvailableHere.RewardItem.Name +
                                 Environment.NewLine;
                             rtbMessages.Text += Environment.NewLine;
+                            ScrollToBottomOfMessages();
 
                             _player.ExperiencePoints +=
                                 newLocation.QuestAvailableHere.RewardExperiencePoints;
@@ -165,6 +167,7 @@ namespace Super_Adventure
                         }
                     }
                     rtbMessages.Text += Environment.NewLine;
+                    ScrollToBottomOfMessages();
 
                     //Add the quest to the player's quest list
                     _player.Quests.Add(new PlayerQuest(newLocation.QuestAvailableHere));
@@ -176,6 +179,7 @@ namespace Super_Adventure
             {
                 rtbMessages.Text += "You see a " + newLocation.MonsterLivingHere.Name +
                     Environment.NewLine;
+                ScrollToBottomOfMessages();
 
                 //Make a new monster, using the values from the standard monster
                 //in the World.Monster list
@@ -337,9 +341,10 @@ namespace Super_Adventure
             //Display message
             rtbMessages.Text += "You hit the " + _currentMonster.Name + " for " +
                 damageToMonster.ToString() + " points." + Environment.NewLine;
+            ScrollToBottomOfMessages();
 
             //Check if the monster is dead
-            if(_currentMonster.CurrentHitPoints <= 0)
+            if (_currentMonster.CurrentHitPoints <= 0)
             {
                 rtbMessages.Text += Environment.NewLine;
                 rtbMessages.Text += "You defeated the " + _currentMonster.Name +
@@ -355,6 +360,7 @@ namespace Super_Adventure
                 _player.Gold += _currentMonster.RewardGold;
                 rtbMessages.Text += "You receive " + 
                     _currentMonster.RewardGold.ToString() + " gold" + Environment.NewLine;
+                ScrollToBottomOfMessages();
 
                 //Get random loot items from the monster
                 List<InventoryItem> lootedItems = new List<InventoryItem>();
@@ -398,6 +404,7 @@ namespace Super_Adventure
                             inventoryItem.Details.NamePlural + Environment.NewLine;
                     }
                 }
+                ScrollToBottomOfMessages();
 
                 //Refresh player information and inventory controls
                 lblHitPoints.Text = _player.CurrentHitPoints.ToString();
@@ -411,6 +418,7 @@ namespace Super_Adventure
 
                 //Add a blank line to the messages box, just for appearance
                 rtbMessages.Text += Environment.NewLine;
+                ScrollToBottomOfMessages();
 
                 //Move player to current location (to heal player and create a new monster to fight)
                 MoveTo(_player.CurrentLocation);
@@ -426,6 +434,7 @@ namespace Super_Adventure
                 //Display message
                 rtbMessages.Text += "The " + _currentMonster.Name + " did " +
                     damageToPlayer.ToString() + " points of damage." + Environment.NewLine;
+                ScrollToBottomOfMessages();
 
                 //Subtract damage from player's health
                 _player.CurrentHitPoints -= damageToPlayer;
@@ -438,6 +447,7 @@ namespace Super_Adventure
                     //Display message
                     rtbMessages.Text += "The" + _currentMonster.Name + " killed you." +
                         Environment.NewLine + Environment.NewLine;
+                    ScrollToBottomOfMessages();
 
                     //Move player to "Home"
                     MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
@@ -471,6 +481,7 @@ namespace Super_Adventure
 
             //Display message
             rtbMessages.Text += "You drink a " + potion.Name + Environment.NewLine;
+            ScrollToBottomOfMessages();
 
             //Monster gets their turn to attack
 
@@ -481,6 +492,7 @@ namespace Super_Adventure
             //Display message
             rtbMessages.Text += "The " + _currentMonster.Name + " did " +
                 damageToPlayer.ToString() + " points of damage." + Environment.NewLine;
+            ScrollToBottomOfMessages();
 
             //Subtract damage from player's health
             _player.CurrentHitPoints -= damageToPlayer;
@@ -490,6 +502,7 @@ namespace Super_Adventure
                 //Display message
                 rtbMessages.Text += "The" + _currentMonster.Name + " killed you." +
                        Environment.NewLine + Environment.NewLine;
+                ScrollToBottomOfMessages();
 
                 //Move player to "Home"
                 MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
@@ -499,6 +512,17 @@ namespace Super_Adventure
             lblHitPoints.Text = _player.CurrentHitPoints.ToString();
             UpdateInventoryListInUI();
             UpdatePotionListInUI();
+        }
+
+        private void SuperAdventure_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ScrollToBottomOfMessages()
+        {
+            rtbMessages.SelectionStart = rtbMessages.Text.Length;
+            rtbMessages.ScrollToCaret();
         }
     }
 }
