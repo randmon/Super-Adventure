@@ -159,7 +159,7 @@ namespace Engine
 
             Quest feedFriendOfLogness = new Quest(QUEST_ID_FEED_FRIEND_OF_LOGNESS,
                 "Feed Friend of Logness",
-                "Feed the Friend of Logness 6 pieces of Rotten flesh.", 20, 0);
+                "Feed the Friend of Logness 6 pieces of Rotten flesh. He will give you a ride to the cliff bottom.", 20, 0);
             feedFriendOfLogness.QuestCompletionItems.Add(new QuestCompletionItem(
                 ItemByID(ITEM_ID_ROTTEN_FLESH), 6));
             feedFriendOfLogness.RewardItem = ItemByID(ITEM_ID_FRIEND_OF_LOGNESS);
