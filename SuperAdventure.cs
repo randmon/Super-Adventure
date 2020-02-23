@@ -33,8 +33,52 @@ namespace Super_Adventure
                 _player = Player.CreateDefaultPlayer();
             }
 
+            //Bind labels to properties
+            lblHitPoints.DataBindings.Add("Text", _player, "CurrentHitPoints");
+            lblGold.DataBindings.Add("Text", _player, "Gold");
+            lblExperience.DataBindings.Add("Text", _player, "ExperiencePoints");
+            lblLevel.DataBindings.Add("Text", _player, "Level");
+
+            //DGV Inventory
+            dgvInventory.RowHeadersVisible = false;
+            dgvInventory.AutoGenerateColumns = false;
+
+            dgvInventory.DataSource = _player.Inventory;
+
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Name",
+                Width = 197,
+                DataPropertyName = "Description"
+            });
+
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Quantity",
+                DataPropertyName = "Quantity"
+            });
+
+            //DGV Quests
+            dgvQuests.RowHeadersVisible = false;
+            dgvQuests.AutoGenerateColumns = false;
+
+            dgvQuests.DataSource = _player.Quests;
+
+            dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Name",
+                Width = 197,
+                DataPropertyName = "Name"
+            });
+
+            dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Done?",
+                DataPropertyName = "IsCompleted"
+            });
+
+
             MoveTo(_player.CurrentLocation);
-            UpdatePlayerStats();
         }
 
         private void btnNorth_Click(object sender, EventArgs e)
@@ -85,9 +129,6 @@ namespace Super_Adventure
             //Completely heal the player
             _player.CurrentHitPoints = _player.MaximumHitPoints;
 
-            //Update Hit Points in UI
-            UpdatePlayerStats();
-
             //Does the location have a quest?
             if(newLocation.QuestAvailableHere != null)
             {
@@ -133,7 +174,6 @@ namespace Super_Adventure
                                 Environment.NewLine;
                             rtbMessages.Text += Environment.NewLine;
                             ScrollToBottomOfMessages();
-                            UpdatePlayerStats();
 
                             _player.AddExperiencePoints(
                                 newLocation.QuestAvailableHere.RewardExperiencePoints);
@@ -218,61 +258,11 @@ namespace Super_Adventure
                 btnUsePotion.Visible = false;
             }
 
-            //Refresh player's inventory list
-            UpdateInventoryListInUI();
-
-            //Refresh the player's quest list
-            UpdateQuestListInUI();
-
             //Refresh player's weapons combobox
             UpdateWeaponListInUI();
 
             //Refresh player's potion combobox
             UpdatePotionListInUI();
-
-            //Update player's stats in UI
-            UpdatePlayerStats();
-        }
-
-        private void UpdateInventoryListInUI()
-        {
-            dgvInventory.RowHeadersVisible = false;
-
-            dgvInventory.ColumnCount = 2;
-            dgvInventory.Columns[0].Name = "Name";
-            dgvInventory.Columns[0].Width = 197;
-            dgvInventory.Columns[1].Name = "Quantity";
-
-            dgvInventory.Rows.Clear();
-
-            foreach (InventoryItem inventoryItem in _player.Inventory)
-            {
-                if (inventoryItem.Quantity > 0)
-                {
-                    dgvInventory.Rows.Add(new[] {
-                        inventoryItem.Details.Name,
-                        inventoryItem.Quantity.ToString() });
-                }
-            }
-        }
-
-        private void UpdateQuestListInUI()
-        {
-            dgvQuests.RowHeadersVisible = false;
-
-            dgvQuests.ColumnCount = 2;
-            dgvQuests.Columns[0].Name = "Name";
-            dgvQuests.Columns[0].Width = 197;
-            dgvQuests.Columns[1].Name = "Done?";
-
-            dgvQuests.Rows.Clear();
-
-            foreach (PlayerQuest playerQuest in _player.Quests)
-            {
-                dgvQuests.Rows.Add(new[] {
-                    playerQuest.Details.Name,
-                    playerQuest.IsCompleted.ToString()});
-            }
         }
 
         private void UpdateWeaponListInUI()
@@ -381,7 +371,6 @@ namespace Super_Adventure
                 rtbMessages.Text += "You receive " + 
                     _currentMonster.RewardGold.ToString() + " gold" + Environment.NewLine;
                 ScrollToBottomOfMessages();
-                UpdatePlayerStats();
 
                 //Get random loot items from the monster
                 List<InventoryItem> lootedItems = new List<InventoryItem>();
@@ -427,10 +416,6 @@ namespace Super_Adventure
                 }
                 ScrollToBottomOfMessages();
 
-                //Refresh player information and inventory controls
-                UpdatePlayerStats();
-
-                UpdateInventoryListInUI();
                 UpdateWeaponListInUI();
                 UpdatePotionListInUI();
 
@@ -456,9 +441,6 @@ namespace Super_Adventure
 
                 //Subtract damage from player's health
                 _player.CurrentHitPoints -= damageToPlayer;
-
-                //Refresh player data in UI
-                UpdatePlayerStats();
 
                 if(_player.CurrentHitPoints <= 0)
                 {
@@ -527,8 +509,6 @@ namespace Super_Adventure
             }
 
             //Refresh player data in UI
-            UpdatePlayerStats();
-            UpdateInventoryListInUI();
             UpdatePotionListInUI();
         }
 
@@ -545,7 +525,6 @@ namespace Super_Adventure
 
         private void UpdatePlayerStats()
         {
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
             lblGold.Text = _player.Gold.ToString();
             lblExperience.Text = _player.ExperiencePoints.ToString();
             lblLevel.Text = _player.Level.ToString();

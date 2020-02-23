@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Linq;
 using System.Xml;
@@ -9,14 +10,34 @@ namespace Engine
 {
     public class Player : LivingCreature
     {
-        public int Gold { get; set; }
-        public int ExperiencePoints { get; private set; }
+        private int _gold;
+        private int _experiencePoints;
+
+        public int Gold
+        {
+            get { return _gold; }
+            set
+            {
+                _gold = value;
+                OnPropertyChanged("Gold");
+            }
+        }
+        public int ExperiencePoints
+        {
+            get { return _experiencePoints; }
+            private set
+            {
+                _experiencePoints = value;
+                OnPropertyChanged("ExperiencePoints");
+                OnPropertyChanged("Level");
+            }
+        }
         public int Level
         {
             get { return ((ExperiencePoints / 100) + 1); }
         }
-        public List<InventoryItem> Inventory { get; set; }
-        public List<PlayerQuest> Quests { get; set; }
+        public BindingList<InventoryItem> Inventory { get; set; }
+        public BindingList<PlayerQuest> Quests { get; set; }
         public Location CurrentLocation { get; set; }
         public Weapon CurrentWeapon { get; set; }
 
@@ -26,8 +47,8 @@ namespace Engine
             Gold = gold;
             ExperiencePoints = experiencePoints;
 
-            Inventory = new List<InventoryItem>();
-            Quests = new List<PlayerQuest>();
+            Inventory = new BindingList<InventoryItem>();
+            Quests = new BindingList<PlayerQuest>();
         }
 
         public static Player CreateDefaultPlayer()
@@ -119,13 +140,13 @@ namespace Engine
             }
             // See if the player has the required item in
             //their inventory
-            return Inventory.Exists(ii => ii.Details.ID ==
+            return Inventory.Any(ii => ii.Details.ID ==
             location.ItemRequiredToEnter.ID);
         }
 
         public bool HasThisQuest (Quest quest)
         {
-            return Quests.Exists(pq => pq.Details.ID == quest.ID);
+            return Quests.Any(pq => pq.Details.ID == quest.ID);
         }
 
         public bool CompletedThisQuest (Quest quest)
@@ -148,7 +169,7 @@ namespace Engine
             {
                 //Check each item in the player's inventory,
                 //to see if they have it, and enough of it
-                if(!Inventory.Exists(ii => ii.Details.ID ==
+                if(!Inventory.Any(ii => ii.Details.ID ==
                 qci.Details.ID && ii.Quantity >= qci.Quantity))
                 {
                     return false;
