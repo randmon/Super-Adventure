@@ -19,15 +19,12 @@ namespace Super_Adventure
         {
             InitializeComponent();
 
-            _player = new Player(10, 10, 20, 0, 1);
+            _player = new Player(10, 10, 20, 0);
             MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             _player.Inventory.Add(new InventoryItem(
                 World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
 
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
-            lblGold.Text = _player.Gold.ToString();
-            lblExperience.Text = _player.ExperiencePoints.ToString();
-            lblLevel.Text = _player.Level.ToString();
+            UpdatePlayerStats();
         }
 
         private void btnNorth_Click(object sender, EventArgs e)
@@ -79,7 +76,7 @@ namespace Super_Adventure
             _player.CurrentHitPoints = _player.MaximumHitPoints;
 
             //Update Hit Points in UI
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
+            UpdatePlayerStats();
 
             //Does the location have a quest?
             if(newLocation.QuestAvailableHere != null)
@@ -126,6 +123,7 @@ namespace Super_Adventure
                                 Environment.NewLine;
                             rtbMessages.Text += Environment.NewLine;
                             ScrollToBottomOfMessages();
+                            UpdatePlayerStats();
 
                             _player.ExperiencePoints +=
                                 newLocation.QuestAvailableHere.RewardExperiencePoints;
@@ -221,6 +219,9 @@ namespace Super_Adventure
 
             //Refresh player's potion combobox
             UpdatePotionListInUI();
+
+            //Update player's stats in UI
+            UpdatePlayerStats();
         }
 
         private void UpdateInventoryListInUI()
@@ -361,6 +362,7 @@ namespace Super_Adventure
                 rtbMessages.Text += "You receive " + 
                     _currentMonster.RewardGold.ToString() + " gold" + Environment.NewLine;
                 ScrollToBottomOfMessages();
+                UpdatePlayerStats();
 
                 //Get random loot items from the monster
                 List<InventoryItem> lootedItems = new List<InventoryItem>();
@@ -407,10 +409,7 @@ namespace Super_Adventure
                 ScrollToBottomOfMessages();
 
                 //Refresh player information and inventory controls
-                lblHitPoints.Text = _player.CurrentHitPoints.ToString();
-                lblGold.Text = _player.Gold.ToString();
-                lblExperience.Text = _player.ExperiencePoints.ToString();
-                lblLevel.Text = _player.Level.ToString();
+                UpdatePlayerStats();
 
                 UpdateInventoryListInUI();
                 UpdateWeaponListInUI();
@@ -440,7 +439,7 @@ namespace Super_Adventure
                 _player.CurrentHitPoints -= damageToPlayer;
 
                 //Refresh player data in UI
-                lblHitPoints.Text = _player.CurrentHitPoints.ToString();
+                UpdatePlayerStats();
 
                 if(_player.CurrentHitPoints <= 0)
                 {
@@ -509,7 +508,7 @@ namespace Super_Adventure
             }
 
             //Refresh player data in UI
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
+            UpdatePlayerStats();
             UpdateInventoryListInUI();
             UpdatePotionListInUI();
         }
@@ -523,6 +522,14 @@ namespace Super_Adventure
         {
             rtbMessages.SelectionStart = rtbMessages.Text.Length;
             rtbMessages.ScrollToCaret();
+        }
+
+        private void UpdatePlayerStats()
+        {
+            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
+            lblGold.Text = _player.Gold.ToString();
+            lblExperience.Text = _player.ExperiencePoints.ToString();
+            lblLevel.Text = _player.Level.ToString();
         }
     }
 }
