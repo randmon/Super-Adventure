@@ -205,22 +205,23 @@ namespace Engine
             player.AppendChild(stats);
     
             // Create the child nodes for the "Stats" node
+            //Current Hit Points
             XmlNode currentHitPoints = playerData.CreateElement("CurrentHitPoints");
             currentHitPoints.AppendChild(playerData.CreateTextNode(this.CurrentHitPoints.ToString()));
             stats.AppendChild(currentHitPoints);
-    
+            //Maximum Hit Points
             XmlNode maximumHitPoints = playerData.CreateElement("MaximumHitPoints");
             maximumHitPoints.AppendChild(playerData.CreateTextNode(this.MaximumHitPoints.ToString()));
             stats.AppendChild(maximumHitPoints);
-    
+            //Gold
             XmlNode gold = playerData.CreateElement("Gold");
             gold.AppendChild(playerData.CreateTextNode(this.Gold.ToString()));
             stats.AppendChild(gold);
-    
+            //Experience Points
             XmlNode experiencePoints = playerData.CreateElement("ExperiencePoints");
             experiencePoints.AppendChild(playerData.CreateTextNode(this.ExperiencePoints.ToString()));
             stats.AppendChild(experiencePoints);
-    
+            //Current Location
             XmlNode currentLocation = playerData.CreateElement("CurrentLocation");
             currentLocation.AppendChild(playerData.CreateTextNode(this.CurrentLocation.ID.ToString()));
             stats.AppendChild(currentLocation);
