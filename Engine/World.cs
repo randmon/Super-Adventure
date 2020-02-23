@@ -166,7 +166,7 @@ namespace Engine
 
             Quest collectFlowers = new Quest(QUEST_ID_COLLECT_FLOWERS,
                 "Collect special flowers",
-                "Bring 5 special flowers to the scientist so he can make his love potion. You will receive the gold potion and 30 gold.", 30, 30);
+                "Bring 5 special flowers to the scientist so he can make his love potion. You will receive the love potion and 30 gold.", 30, 30);
             collectFlowers.QuestCompletionItems.Add(new QuestCompletionItem(
                 ItemByID(ITEM_ID_SPECIAL_FLOWER), 5));
             collectFlowers.RewardItem = ItemByID(ITEM_ID_LOVE_POTION);
